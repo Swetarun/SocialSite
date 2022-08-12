@@ -1,3 +1,9 @@
+const mongoose = require('mongoose')
+
+// for Object Id validation for futher use
+const isValidObjectId = function (value) {
+  return mongoose.Types.ObjectId.isValid(value)
+};
 
 //-----------------------blank body-------------------
 const isValidRequestBody = function (body) {
@@ -61,4 +67,4 @@ const isValidImageType = function (data) {
     return reg.test(data)
   }
 
-  module.exports = { isValidImageType, isValidStatus, isValidPassword, isValidEmail, isValidInputValue, isValidCountryCode, isValidRequestBody, isValidGender, isValidOnlyCharacters, isValidPhone }
+  module.exports = { isValidObjectId, isValidImageType, isValidStatus, isValidPassword, isValidEmail, isValidInputValue, isValidCountryCode, isValidRequestBody, isValidGender, isValidOnlyCharacters, isValidPhone }

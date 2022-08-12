@@ -15,8 +15,7 @@ const userSchema = new mongoose.Schema(
     followingCount: { type: Number, default: 0 },
     followers: { type: Array, default: [] },
     following: { type: Array, default: [] },
-    postCount: { type: Number, default: 0 },
-    // postLikedBy: 
+    postCount: { type: Number, default: 0 }
    
     }, { _id: false },
   { timestamps: true }

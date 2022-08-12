@@ -1,20 +1,31 @@
 const commentModel = require('../models/commentModel.js')
 const postModel = require('../models/postModel.js')
 const userModel = require('../models/userModel.js')
-const { isValidInputBody } = require('../validations/validation.js')
+const { isValidObjectId } = require('../validations/validation.js')
 
 const createComment = async function (req, res) {
     try {
         let userId = req.params.userId;
-        let user = await userModel.findOne({ _id: userId })
+        let user = await userModel.findOne({ _id: userId });
+  if (!user) {
+    return res.status(400).send({
+      status: false,
+      message: "User does not exist",
+    });
+  }
 
-        if (!user) {
-            return res
-                .status(400)
-                .send({ status: false, message: "User doesn't exist" });
-        }
-
+  if (req.userName !== user.user_name) {
+    return res.status(400).send({
+      status: false,
+      message: "Not Authorized",
+    });
+  }
         let postId = req.params.postId;
+        if (!isValidObjectId(postId)) {
+            return res
+              .status(400)
+              .send({ status: false, message: " invalid PostId ಥ_ಥ" });
+          }
         let post = await postModel.findOne({ _id: postId })
 
         if (!post) {
@@ -38,10 +49,7 @@ const createComment = async function (req, res) {
             "Date": commentCreated.createdAt
         }
         post.comment.push(commentPush)
-        post.save()
-
-        // await postModel.findOne
-        
+        post.save()        
 
         return res.status(201).send({status: true, msg: "commented on Post", data: commentCreated})
     }
@@ -61,7 +69,21 @@ const createSubComment = async function (req, res) {
                 .send({ status: false, message: "User doesn't exist" });
         }
 
+        if (req.userName !== user.user_name) {
+            return res.status(400).send({
+              status: false,
+              message: "Not Authorized",
+            });
+          }
+
         let commentId = req.params.commentId;
+
+        if (!isValidObjectId(commentId)) {
+            return res
+              .status(400)
+              .send({ status: false, message: " invalid CommentId ಥ_ಥ" });
+        }
+        
         let comment = await commentModel.findOne({ _id: commentId })
 
         if (!comment) {
@@ -86,10 +108,7 @@ const createSubComment = async function (req, res) {
             "Date": commentCreated.createdAt
         }
         comment.subComment.push(commentPush)
-        comment.save()
-
-        // await postModel.findOne
-        
+        comment.save()        
 
         return res.status(201).send({status: true, msg: "commented on Comment", data: commentCreated})
     }
